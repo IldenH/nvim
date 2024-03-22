@@ -1,3 +1,8 @@
 return {
-	"fedepujol/move.nvim"
+	{
+		"fedepujol/move.nvim",
+		config = function()
+			require("move").setup({})
+		end,
+	}
 }
