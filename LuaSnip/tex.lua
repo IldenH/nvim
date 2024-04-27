@@ -78,22 +78,8 @@ end
 tex_utils.not_in_flalign_nl = function(a, b, c)
 	return tex_utils.not_in_flalign and not line_begin(a, b, c)
 end
--- local nl_whitespace = function(line_to_cursor, matched_trigger, captures)
--- 	local whitespaceEnding = not not string.match(line_to_cursor, "%s" .. matched_trigger .. "$")
--- 	local lineStart = line_begin(line_to_cursor, matched_trigger, captures)
--- 	return whitespaceEnding or lineStart
--- end
 
--- Function to re-insert capture
--- f( function(_, snip) return snip.captures[1] end )
-
---------------
--- Snippets --
---------------
 return {
-	------------------
-	-- New document --
-	------------------
 	s({ trig = "doc", descr = "LaTeX document boilerplate" },
 		fmta(
 			[[
@@ -169,29 +155,10 @@ return {
 			]],
 			{ f( function(_, snip) return snip.captures[1] end ), i(1) }
 		), { condition = tex_utils.in_flalign }),
-	s({ trig = "me", descr = "Unnumbered equation" },
-		fmta(
-			[[
-				\begin{equation*}
-					<>
-				\end{equation*}
-			]],
-			{ i(1) }
-		), { condition = tex_utils.in_text_lnstart }),
 	---------------------
 	s({ trig = "pp", descr = "Parenthesis", snippetType = "autosnippet", wordTrig = false },
 		fmta(
 			[[\left(<>\right)]],
-			{ i(1) }
-		), { condition = tex_utils.in_mathzone }),
-	s({ trig = "bra", descr = "Brackets", snippetType = "autosnippet", wordTrig = false },
-		fmta(
-			[[\left\{<>\right\}]],
-			{ i(1) }
-		), { condition = tex_utils.in_mathzone }),
-	s({ trig = "angl", descr = "Left and Right angles", wordTrig = true, snippetType="autosnippet" },
-		fmta(
-			[[\langle<>\rangle]],
 			{ i(1) }
 		), { condition = tex_utils.in_mathzone }),
 	s({ trig = "ff", descr = "Fraction", snippetType = "autosnippet", wordTrig = true },
@@ -199,13 +166,6 @@ return {
 			[[\frac{<>}{<>}]],
 			{ i(1), i(2) }
 		), { condition = tex_utils.in_mathzone }),
-	s({ trig = "([%s])*", descr = "Multiplication sign", snippetType = "autosnippet", regTrig = true, wordTrig = false },
-		fmta(
-			[[<>\cdot]],
-			{ f( function(_, snip) return snip.captures[1] end ) }
-		),
-		-- { t([[\cdot]]) },
-		{ condition = tex_utils.in_mathzone }),
 	s({ trig = "([%s])aa", descr = "Answer (Double underline)", snippetType = "autosnippet", wordTrig = true, regTrig = true },
 		fmta(
 			[[
@@ -243,12 +203,6 @@ return {
 			]],
 			{ i(1), i(2), i(3), i(4) }
 		), { condition = tex_utils.in_mathzone }),
-	-- s({trig = "pm", descr = "Plus/Minus sign", snippetType = "autosnippet", wordTrig = true},
-	--   { t([[\pm]]) }, { condition = tex_utils.in_mathzone }),
-	-- s({trig = "lo", descr = "Logical or", snippetType = "autosnippet", wordTrig = true},
-	--   { t([[\lor]]) }, { condition = tex_utils.in_mathzone }),
-	-- s({trig = "la", descr = "Logical and", snippetType = "autosnippet", wordTrig = true},
-	--   { t([[\land]]) }, { condition = tex_utils.in_mathzone }),
 	s({ trig = "abc", descr = "ABC-formula", wordTrig = true },
 		fmta([[x=\frac{-<>\pm\sqrt{<>^{2}-4*<>*<>}}{2*<>}]],
 			{ i(2), rep(2), i(1), i(3), rep(1) }
@@ -258,71 +212,24 @@ return {
 			[[\polynomdiv{<>}{<>}]],
 			{ i(1), i(2) }
 		), { condition = tex_utils.in_text_lnstart }),
-	s({trig = "larr", descr = "Left Arrow", snippetType = "autosnippet", wordTrig = true},
-	  { t([[\leftarrow]]) }, { condition = tex_utils.in_mathzone }),
-	s({trig = "rarr", descr = "Right Arrow", snippetType = "autosnippet", wordTrig = true},
-	  { t([[\rightarrow]]) }, { condition = tex_utils.in_mathzone }),
-	-------------
-	-- Command --
-	-------------
-	s({trig = "1c", desc = "General command", snippetType = "autosnippet", wordTrig = true},
-		fmta([[\<>{<>}]], { i(1), i(2) })),
-	s({trig = "2c", desc = "General command", snippetType = "autosnippet", wordTrig = true},
-		fmta([[\<>{<>}{<>}]], { i(1), i(2), i(3) })),
 	----------
 	-- Text --
 	----------
-	s({ trig = "(%s)ll", deescr = "Newline with more spacing", snippetType = "autosnippet", regTrig = true, wordTrig = true },
+	s({ trig = "(%s)ll", deescr = "Newline with spacing", snippetType = "autosnippet", regTrig = true, wordTrig = true },
 		fmta(
 			"<>\\\\[5pt]",
 			{ f( function(_, snip) return snip.captures[1] end ) }
 		), { condition = tex_utils.in_text }),
-	s({ trig = "(%s)nn", deescr = "Newline", snippetType = "autosnippet", regTrig = true, wordTrig = true },
-		fmta(
-			"<>\\\\",
-			{ f( function(_, snip) return snip.captures[1] end ) }
-		), { condition = tex_utils.in_text }),
-	s({ trig = "pr", descr = "New paragraph", snippetType = "autosnippet", wordTrig = true },
-		{ t([[\par]]) },
-		{ condition = line_begin }),
 	s({ trig = "text", descr = "Text", wordTrig = true },
 		fmta(
-			[[\text{<>}]], -- Get visual does not work here as it is same as normal
-			{ d(1, get_visual) }
+			[[\text{<>}]],
+			{ i(1) }
 		)),
-	s({ trig = "bold", descr = "Bold text", wordTrig = true },
-		fmta(
-			[[\textbf{<>}]], -- Get visual does not work here
-			{ d(1, get_visual) }
-		), { condition = tex_utils.in_text }),
-	s({ trig = "ital", descr = "Italic text", wordTrig = true },
-		fmta(
-			[[\textit{<>}]],
-			{ d(1, get_visual) }
-		), { condition = tex_utils.in_text }),
-	-- These sections use *, and will NOT be shown in the \tableofcontents
+	-- uses *, not shown in \tableofcontents
 	s({ trig = "sec", descr = "Section", wordTrig = true, snippetType = "autosnippet" },
 		fmta(
 			[[\section*{<>}]],
 			{ i(1, "Section") }
-		), { condition = tex_utils.in_text_lnstart }),
-	s({ trig = "subs", descr = "Subsection", wordTrig = true, snippetType = "autosnippet" },
-		fmta(
-			[[\subsection*{<>}]],
-			{ i("Subsection") }
-		), { condition = tex_utils.in_text_lnstart }),
-	------------
-	-- Images --
-	------------
-	s({ trig = "img", descr = "Image", regTrig = true, wordTrig = true },
-		fmta( -- Can replace \textwidth with \linewidth -- All images are stored in ./images
-			[[<>\includegraphics[width=<>\textwidth]{<>}]],
-			{ f( function(_, snip) return snip.captures[1] end ), i(1, "0.9"), i(2) }
-		), { condition = tex_utils.in_text }),
-	s({ trig = "cc", descr = "Inline centered", snippetType = "autosnippet", wordTrig = true },
-		fmta(
-			[[<>\centerline{<>}]],
-			{ f( function(_, snip) return snip.captures[1] end ), d(1, get_visual) }
 		), { condition = tex_utils.in_text_lnstart }),
 	----------
 	-- List --
@@ -368,10 +275,14 @@ return {
 			]],
 			{ f( function(_, snip) return snip.captures[1] end ), i(1) }
 		), { condition = tex_utils.in_list_nlnstart_math }),
-
 	-----------
 	-- Other --
 	-----------
+	s({ trig = "img", descr = "Image", regTrig = true, wordTrig = true },
+		fmta(
+			[[<>\includegraphics[width=<>\textwidth]{<>}]],
+			{ f( function(_, snip) return snip.captures[1] end ), i(1, "0.9"), i(2) }
+		), { condition = tex_utils.in_text }),
 	s({ trig = "new", descr = "Generic environment", wordTrig = true },
 		fmta(
 			[[
