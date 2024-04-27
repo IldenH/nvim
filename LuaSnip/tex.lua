@@ -106,10 +106,6 @@ return {
 				\pagestyle{empty}
 				\pagenumbering{gobble}
 
-				\newcommand\Item[1][]{%
-					\ifx\relax#1\relax  \item \else \item[#1] \fi
-					\abovedisplayskip=0pt\abovedisplayshortskip=0pt~\vspace*{-\baselineskip}}
-
 				\begin{document}
 
 				\definecolor{bg}{HTML}{282828}
@@ -254,7 +250,7 @@ return {
 		), { condition = tex_utils.in_text_lnstart }),
 	s({ trig = "li", descr = "List item", snippetType = "autosnippet", wordTrig = true },
 		fmta(
-			[[<>\Item <>]],
+			[[<>\item <>]],
 			{ f( function(_, snip) return snip.captures[1] end ), i(1) }
 		), { condition = tex_utils.in_list_lnstart }),
 	s({ trig = "(%s)lm", descr = "List multiline math", snippetType = "autosnippet", wordTrig = false, regTrig = true },
